@@ -69,6 +69,11 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .shell { max-width: var(--shell); margin-inline: auto; padding-inline: var(--gutter); }
+/* ссылка «к содержанию»: видна только при переходе клавиатурой */
+.skip { position: absolute; top: var(--space-sm); left: var(--space-sm); z-index: calc(var(--z-nav) + 1); padding: var(--space-sm) var(--space-md); border-radius: var(--radius); background: var(--color-ink); color: var(--color-paper); text-decoration: none; font-weight: 600; transform: translateY(-200%); }
+.skip:focus { transform: none; outline-color: var(--color-focus-dark); }
+/* длинные абзацы на телефоне — с переносами (русский, английский; для грузинского словарей нет) */
+:is(.lede, .page-lede, .section__intro, .cond p, .faq__a p, .plain li, .fact__label, .urgent, .pulse__hint) { hyphens: auto; -webkit-hyphens: auto; }
 img { max-width: 100%; }
 
 /* ── nav · N10: полоса у верха → «пилюля» после прокрутки; размер не меняется ── */
