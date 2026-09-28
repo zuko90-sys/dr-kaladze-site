@@ -79,11 +79,11 @@ img { max-width: 100%; }
 a[href^="tel:"] { white-space: nowrap; }
 
 /* подписи-ярлыки: мелкие капители с разрядкой — технический голос сайта */
-:is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .reasons__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) {
+:is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) {
   font: 500 var(--text-xs)/1.5 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted);
 }
 /* грузинский: без text-transform — иначе браузер переведёт строчные в заглавные мтаврули */
-html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .reasons__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) { text-transform: none; letter-spacing: 0; font-size: var(--text-sm); }
+html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) { text-transform: none; letter-spacing: 0; font-size: var(--text-sm); }
 
 /* ── nav · N1b: липкая полоса с линейкой; после прокрутки — лишь тень в один пиксель ── */
 .nav { position: sticky; top: 0; z-index: var(--z-nav); background: var(--color-paper); border-bottom: 1px solid var(--color-rule); }
@@ -177,15 +177,19 @@ h3 { margin: 0; color: var(--color-ink); font: 600 var(--text-md)/1.25 var(--fon
 .section__intro { max-width: var(--measure); margin: var(--space-md) 0 0; font-size: var(--text-md); line-height: 1.5; }
 .more { margin: var(--space-xl) 0 0; }
 
-/* с чем приходят: пронумерованное оглавление, ведёт к подробностям */
-.reasons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-2xl); margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-ink); }
-.reasons li { border-bottom: 1px solid var(--color-rule); }
-.reasons a { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr) auto; align-items: baseline; gap: var(--space-sm); padding-block: var(--space-sm); color: var(--color-ink); font-weight: 500; text-decoration: none; }
-.reasons__n { font-variant-numeric: tabular-nums; }
-.reasons a::after { content: "→"; color: var(--color-muted); }
-.reasons a:hover { color: var(--color-accent-text); }
-.reasons a:hover::after { color: var(--color-accent-text); }
-.reasons a:active { color: var(--color-accent-hover); }
+/* с чем приходят: слева заголовок и «когда звонить 112», справа четыре блока по смыслу — в тех же 12 колонках, что и первый экран */
+.help { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-lg); row-gap: var(--space-xl); align-items: start; }
+.help__side { grid-column: 1 / span 4; }
+.help__side .more { margin-top: var(--space-lg); }
+.groups { grid-column: 5 / span 8; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xl) var(--space-lg); margin: 0; padding: 0; list-style: none; }
+.group { display: flex; flex-direction: column; gap: var(--space-xs); padding-top: var(--space-sm); border-top: 1px solid var(--color-ink); }
+.group__n { font-variant-numeric: tabular-nums; }
+.group h3 { font-size: var(--text-lg); }
+.group h3 a { color: inherit; text-decoration: none; }
+.group h3 a::after { content: " →"; color: var(--color-muted); font-weight: 400; }
+.group h3 a:hover, .group h3 a:hover::after { color: var(--color-accent-text); }
+.group h3 a:active { color: var(--color-accent-hover); }
+.group p { margin: 0; max-width: 24rem; color: var(--color-ink-2); line-height: 1.5; }
 /* когда не ждать приёма: одна строка, без рамки */
 .note { max-width: var(--measure); margin: var(--space-lg) 0 0; font-size: var(--text-sm); line-height: 1.5; color: var(--color-muted); }
 .note b { color: var(--color-ink); font-weight: 600; }
@@ -318,8 +322,14 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
   .hero { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-xl); padding-top: var(--space-lg); }
   h1, .hero .portrait, .intro, .spec { grid-column: 1; grid-row: auto; }
   .hero .portrait { width: min(100%, 20rem); }
-  .conditions, .reasons, .book { grid-template-columns: minmax(0, 1fr); }
-  .book__text, .book__call { grid-column: 1; }
+  .conditions, .book, .help { grid-template-columns: minmax(0, 1fr); }
+  .book__text, .book__call, .groups { grid-column: 1; }
+  /* на узком экране порядок: заголовок → блоки → «112» → ссылка */
+  .help__side { display: contents; }
+  .help__side h2 { order: 1; }
+  .groups { order: 2; }
+  .help__side .note { order: 3; margin-top: 0; }
+  .help__side .more { order: 4; margin-top: 0; }
   .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .todo-list { grid-template-columns: minmax(0, 1fr); }
   .todo-list li { min-height: 0; }
@@ -342,6 +352,7 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
   .lede { font-size: var(--text-base); }
   .cta { margin-top: var(--space-lg); }
   .spec > div, .rows > div, .tl { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
+  .groups { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
   .ecg__strip { height: 6rem; }
   .ecg__read { padding-left: var(--space-xl); }
   .steps { grid-template-columns: minmax(0, 1fr); }
