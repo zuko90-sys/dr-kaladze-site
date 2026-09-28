@@ -1,4 +1,4 @@
-/* Hallmark · genre: modern-minimal · macrostructure: Split Studio — home: worded H1 + square portrait, lede and CTA left, spec table right; the ECG strip on chart grid doubles as the tap-to-count pulse; inner pages: facts on hairlines · nav: N1b sticky rule (phones: one scrollable row) · footer: Ft1 mast on paper-2
+/* Hallmark · genre: modern-minimal · macrostructure: Split Studio — home: worded H1 lockup (name 700 + role 400, same size) + square portrait, lede and CTA left, spec table right; the ECG strip on chart grid doubles as the tap-to-count pulse; four grouped reasons; inner pages: facts on hairlines · nav: N1b sticky rule (phones: one scrollable row), CTA scrolls to the booking block · footer: Ft1 mast on the ink band — on the home page fused with the booking band into one dark close
  * theme: custom, grown from design/v1-tech.html (the user's pick, 24.09.2026) · vibe: "clinical precision, cool paper, one cardiac signal" · paper: oklch(98.6% 0.004 245) · accent: oklch(52% 0.19 25)
  * display + body: Golos Text 400–800 · ka: Noto Sans Georgian · labels: Golos 500 caps, tracked (no mono on purpose — nothing to download)
  * axes: light / grotesk-sans / warm (25°) · enrichment: Tier B hand-built SVG — the trace draws itself once on load; a tap only moves the readout · studied: no
@@ -21,6 +21,13 @@
   --color-focus:        oklch(50%   0.210 25);
   --color-grid-minor:   oklch(95.3% 0.006 245);
   --color-grid-major:   oklch(90.5% 0.012 245);
+  --color-grid-hover:   oklch(86%   0.016 245);
+  --color-accent-soft:  oklch(80%   0.120 25);
+  /* на чернильной полосе: запись и подвал */
+  --color-on-ink:       oklch(96.5% 0.007 245);
+  --color-on-ink-soft:  oklch(78%   0.014 250);
+  --color-on-ink-mute:  oklch(62%   0.016 250);
+  --color-rule-ink:     oklch(34%   0.030 256);
 
   --font-display: "Golos Text", "Noto Sans Georgian", ui-sans-serif, system-ui, sans-serif;
   --font-body:    "Golos Text", "Noto Sans Georgian", ui-sans-serif, system-ui, sans-serif;
@@ -55,6 +62,9 @@ html[lang="ka"] {
   --text-h2: clamp(1.4rem, 1.1vw + 1rem, 1.85rem);
 }
 
+/* зарегистрированное свойство: цвет сетки ЭКГ умеет плавно меняться при наведении */
+@property --color-grid-major { syntax: "<color>"; inherits: true; initial-value: oklch(90.5% 0.012 245); }
+
 *, *::before, *::after { box-sizing: border-box; }
 html, body { overflow-x: clip; }
 html { scroll-padding-top: 5rem; }
@@ -79,11 +89,11 @@ img { max-width: 100%; }
 a[href^="tel:"] { white-space: nowrap; }
 
 /* подписи-ярлыки: мелкие капители с разрядкой — технический голос сайта */
-:is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) {
+:is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .book__label, .tl__years, .todo__tag, .crumbs) {
   font: 500 var(--text-xs)/1.5 var(--font-body); letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-muted);
 }
 /* грузинский: без text-transform — иначе браузер переведёт строчные в заглавные мтаврули */
-html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .step__n, .book__label, .tl__years, .todo__tag, .crumbs) { text-transform: none; letter-spacing: 0; font-size: var(--text-sm); }
+html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group__n, .book__label, .tl__years, .todo__tag, .crumbs) { text-transform: none; letter-spacing: 0; font-size: var(--text-sm); }
 
 /* ── nav · N1b: липкая полоса с линейкой; после прокрутки — лишь тень в один пиксель ── */
 .nav { position: sticky; top: 0; z-index: var(--z-nav); background: var(--color-paper); border-bottom: 1px solid var(--color-rule); }
@@ -123,7 +133,8 @@ html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group
 }
 h1 { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin: 0; min-width: 0; color: var(--color-ink); overflow-wrap: anywhere; }
 .name { display: block; font: 700 var(--text-display)/1.02 var(--font-display); letter-spacing: -0.03em; }
-.role { display: block; margin-top: var(--space-xs); color: var(--color-muted); font: 400 calc(var(--text-display) * 0.72)/1.15 var(--font-display); letter-spacing: -0.015em; }
+/* имя и роль — одна плашка: тот же кегль, разный вес */
+.role { display: block; color: var(--color-muted); font: 400 var(--text-display)/1.02 var(--font-display); letter-spacing: -0.03em; }
 .hero .portrait { grid-column: 9 / span 4; grid-row: 1; aspect-ratio: 1; }
 .intro { grid-column: 1 / span 6; grid-row: 2; }
 .spec { grid-column: 9 / span 4; grid-row: 2; }
@@ -143,7 +154,8 @@ h1 { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin: 0; min-width
 /* ── ЭКГ: ритм-полоска на миллиметровке — единственный рисунок на сайте, и он же считает пульс ── */
 .ecg { margin: 0; }
 .ecg__strip {
-  position: relative; height: 7rem; border-block: 1px solid var(--color-rule);
+  position: relative; height: 8.5rem; border-block: 1px solid var(--color-rule);
+  transition: --color-grid-major var(--dur-micro) var(--ease-out);
   background:
     linear-gradient(var(--color-grid-major) 1px, transparent 1px) 0 0 / 40px 40px,
     linear-gradient(90deg, var(--color-grid-major) 1px, transparent 1px) 0 0 / 40px 40px,
@@ -152,7 +164,10 @@ h1 { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin: 0; min-width
     var(--color-paper);
 }
 .ecg__trace { display: block; width: 100%; height: 100%; }
-.ecg__trace path { fill: none; stroke: var(--color-accent); stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.ecg__trace path { fill: none; stroke: var(--color-accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+/* при наведении сетка чуть темнеет, подпись — чёрная: полоса живая */
+.ecg__strip:hover { --color-grid-major: var(--color-grid-hover); }
+.ecg__tap:hover .ecg__label { color: var(--color-ink); }
 /* вся полоса — кнопка; показания сидят у правого края на «бумажной» подложке */
 .ecg__tap { position: absolute; inset: 0; display: flex; justify-content: flex-end; width: 100%; margin: 0; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: right; cursor: pointer; }
 .ecg__tap:focus-visible { outline-offset: -3px; }
@@ -171,6 +186,11 @@ h1 { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin: 0; min-width
 /* ── разделы ── */
 .section { padding-block: var(--space-2xl) var(--space-3xl); border-top: 1px solid var(--color-rule); }
 .section--tint { background: var(--color-paper-2); border-top: 0; }
+/* тёмный финал: блок записи и подвал сливаются в одну чернильную полосу */
+.section--dark { margin-top: var(--space-2xl); padding-block: var(--space-3xl); border-top: 0; background: var(--color-ink); color: var(--color-on-ink-soft); --color-focus: var(--color-accent-soft); }
+.section--dark h2, .section--dark .book__phone { color: var(--color-on-ink); }
+.section--dark .book__label { color: var(--color-on-ink-mute); }
+.section--dark .book__phone:hover { color: var(--color-accent-soft); }
 .section__head { max-width: 46rem; margin-bottom: var(--space-xl); }
 h2 { margin: 0; min-width: 0; color: var(--color-ink); font: 700 var(--text-h2)/1.12 var(--font-display); letter-spacing: -0.025em; overflow-wrap: anywhere; }
 h3 { margin: 0; color: var(--color-ink); font: 600 var(--text-md)/1.25 var(--font-display); letter-spacing: -0.015em; }
@@ -244,13 +264,16 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
 .tests > div { grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); }
 .tests dt { font-size: var(--text-sm); text-transform: none; letter-spacing: 0; color: var(--color-ink); font-weight: 600; }
 .tests + .section__intro { margin-top: var(--space-lg); }
-/* как проходит приём: четыре шага на линейках, номер — ярлык */
+/* как проходит приём: четыре шага на линейках, номер — главная цифра шага */
 .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-xl) var(--space-lg); margin: 0; padding: 0; list-style: none; }
 .step { display: flex; flex-direction: column; gap: var(--space-sm); padding-top: var(--space-sm); border-top: 1px solid var(--color-ink); }
-.step__n { font-variant-numeric: tabular-nums; }
+.step__n { color: var(--color-ink); font: 700 var(--text-h2)/1 var(--font-display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
 .step p { margin: 0; }
 .bring { font-size: var(--text-md); }
-.plain { max-width: var(--measure); margin: 0; padding-left: 1.2em; }
+/* списки — с тире, а не с браузерными точками */
+.plain { max-width: var(--measure); margin: 0; padding: 0; list-style: none; }
+.plain li { position: relative; padding-left: 1.4em; }
+.plain li::before { content: "—"; position: absolute; left: 0; color: var(--color-muted); }
 .plain li + li { margin-top: var(--space-xs); }
 
 /* опыт: годы — ярлык строки, место — чёрным */
@@ -286,17 +309,18 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
 .cta-band { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-md) var(--space-xl); padding: var(--space-xl); border-radius: var(--radius-photo); background: var(--color-paper-2); }
 .cta-band p { max-width: 32rem; margin: 0; color: var(--color-ink); font: 600 var(--text-md)/1.35 var(--font-display); letter-spacing: -0.01em; }
 
-/* ── footer · Ft1: мачта на светлой полосе ── */
-.foot { margin-top: var(--space-3xl); padding-block: var(--space-2xl) var(--space-xl); border-top: 1px solid var(--color-rule); background: var(--color-paper-2); color: var(--color-ink-2); }
-.foot__mast { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-lg) var(--space-2xl); padding-bottom: var(--space-xl); border-bottom: 1px solid var(--color-rule-2); }
-.foot__name { margin: 0; color: var(--color-ink); font: 700 clamp(1.3rem, 1vw + 1rem, 1.7rem)/1.1 var(--font-display); letter-spacing: -0.025em; }
-.foot__role { margin: var(--space-2xs) 0 0; color: var(--color-muted); }
+/* ── footer · Ft1: мачта на чернильной полосе; на главной подвал продолжает тёмный блок записи ── */
+.foot { margin-top: var(--space-3xl); padding-block: var(--space-2xl) var(--space-xl); border-top: 1px solid var(--color-rule-ink); background: var(--color-ink); color: var(--color-on-ink-soft); --color-focus: var(--color-accent-soft); }
+main:has(.section--dark) + .foot { margin-top: 0; padding-top: var(--space-xl); }
+.foot__mast { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-lg) var(--space-2xl); padding-bottom: var(--space-xl); border-bottom: 1px solid var(--color-rule-ink); }
+.foot__name { margin: 0; color: var(--color-on-ink); font: 700 clamp(1.3rem, 1vw + 1rem, 1.7rem)/1.1 var(--font-display); letter-spacing: -0.025em; }
+.foot__role { margin: var(--space-2xs) 0 0; color: var(--color-on-ink-mute); }
 .foot__links { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); margin: 0; padding: 0; list-style: none; }
-.foot a { color: var(--color-ink); text-decoration: none; }
+.foot a { color: var(--color-on-ink); text-decoration: none; }
 .foot a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
-.foot a:active { color: var(--color-accent-text); }
+.foot a:active { color: var(--color-accent-soft); }
 .foot__links a { white-space: nowrap; font-weight: 500; font-size: var(--text-sm); }
-.foot__meta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-sm) var(--space-2xl); padding-top: var(--space-lg); color: var(--color-muted); font-size: var(--text-sm); }
+.foot__meta { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-sm) var(--space-2xl); padding-top: var(--space-lg); color: var(--color-on-ink-mute); font-size: var(--text-sm); }
 .foot__meta p { margin: 0; }
 .foot__phone { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
@@ -306,6 +330,7 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
 
 /* ── движение: полоска рисует себя один раз при загрузке; больше на сайте ничего не шевелится ── */
 @media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
   .ecg__trace path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ecg-draw var(--dur-draw) var(--ease-out) 0.3s forwards; }
   @keyframes ecg-draw { to { stroke-dashoffset: 0; } }
 }
@@ -348,6 +373,8 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
   .brand { display: none; }
   .lang { margin-right: auto; }
   .hero { row-gap: var(--space-lg); }
+  /* на узком экране роль тем же кеглем не влезает в строку — снова подпись */
+  .role { margin-top: var(--space-xs); font-size: calc(var(--text-display) * 0.72); line-height: 1.15; letter-spacing: -0.015em; }
   .hero .portrait { width: min(100%, 15rem); }
   .lede { font-size: var(--text-base); }
   .cta { margin-top: var(--space-lg); }
