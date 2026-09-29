@@ -98,7 +98,7 @@ html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group
 .brand { display: inline-flex; align-items: center; gap: var(--space-xs); color: var(--color-ink); text-decoration: none; white-space: nowrap; font: 600 1rem/1 var(--font-display); letter-spacing: -0.01em; }
 .brand:hover { color: var(--color-ink-2); }
 /* знак — один удар сердца; в шапке красный, в подвале чернильный */
-.mark { flex: none; width: 1.5rem; height: 0.875rem; color: var(--color-accent); }
+.mark { flex: none; width: 1.625rem; height: 0.875rem; color: var(--color-accent); }
 .foot__name .mark { margin-right: var(--space-xs); vertical-align: -0.05em; color: var(--color-ink); }
 .nav__links { display: flex; gap: var(--space-lg); margin: 0 auto; padding: 0; }
 .nav__links a { display: inline-block; padding-block: var(--space-sm); font: 500 var(--text-sm)/1 var(--font-body); color: var(--color-ink-2); text-decoration: none; white-space: nowrap; }
@@ -125,18 +125,20 @@ html[lang="ka"] :is(.spec dt, .rows dt, .lang a, .ecg__label, .ecg__unit, .group
 .textlink:hover { text-decoration-color: var(--color-ink); }
 .textlink:active { color: var(--color-accent-text); }
 
-/* ── главная · Split Studio: имя и текст слева, портрет и таблица фактов справа, всё на 12 колонках ── */
+/* ── главная · Split Studio: слева имя, лид и кнопка — по центру высоты правой колонки; справа портрет,
+   под ним таблица фактов. Так на широком экране над именем не висит пустой экран ── */
 .hero {
-  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-lg); row-gap: var(--space-2xl);
+  display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--space-lg); row-gap: var(--space-lg);
   max-width: var(--shell); margin: 0 auto; padding: var(--space-xl) var(--gutter) var(--space-2xl);
 }
-h1 { grid-column: 1 / span 8; grid-row: 1; align-self: end; margin: 0; min-width: 0; color: var(--color-ink); overflow-wrap: anywhere; }
+.hero__text { grid-column: 1 / span 8; grid-row: 1 / span 2; align-self: center; min-width: 0; }
+h1 { margin: 0; min-width: 0; color: var(--color-ink); overflow-wrap: anywhere; }
 .name { display: block; font: 800 var(--text-display)/1.02 var(--font-display); letter-spacing: -0.045em; }
 /* имя и роль — одна плашка: тот же кегль, разный вес */
 .role { display: block; color: var(--color-muted); font: 400 var(--text-display)/1.02 var(--font-display); letter-spacing: -0.03em; }
 .hero .portrait { grid-column: 9 / span 4; grid-row: 1; aspect-ratio: 1; }
-.intro { grid-column: 1 / span 6; grid-row: 2; }
-.spec { grid-column: 9 / span 4; grid-row: 2; }
+.intro { margin-top: var(--space-xl); }
+.spec { grid-column: 9 / span 4; grid-row: 2; align-self: start; }
 /* портрет: большое скругление и одна мягкая тень — единственная тень на странице */
 .portrait { position: relative; margin: 0; aspect-ratio: 4 / 5; overflow: hidden; border-radius: var(--radius-card); background: var(--color-paper-2); box-shadow: var(--shadow-soft); }
 /* настоящий снимок (коридор клиники): без наложений, кадр от верхнего края — голова и плечи в квадрате главной */
@@ -249,8 +251,8 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
 .todo__tag { display: block; margin-bottom: var(--space-2xs); color: var(--color-accent-text); }
 .todo-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); margin: var(--space-lg) 0 0; padding: 0; list-style: none; }
 .todo-list li { min-height: 7rem; padding: var(--space-md); border: 1px dashed var(--color-rule-2); border-radius: var(--radius); color: var(--color-muted); font-size: var(--text-sm); }
-/* общий текст на согласование с Торнике: метка видна только в черновике — чистовая сборка снимает атрибут */
-[data-approve]::before {
+/* общий текст на согласование с Торнике: метка видна, только когда сборка ставит body.marks (SHOW_MARKS в build.py) */
+body.marks [data-approve]::before {
   content: attr(data-approve); grid-column: 1 / -1; display: block; width: fit-content; margin-bottom: var(--space-md);
   padding: var(--space-2xs) var(--space-sm); border: 1px dashed var(--color-accent-text); border-radius: 4px;
   color: var(--color-accent-text); font: 600 var(--text-xs)/1.3 var(--font-body);
@@ -360,7 +362,10 @@ span.todo { display: inline; margin: 0; padding: 0 var(--space-2xs); border-widt
   .nav__inner { padding-top: var(--space-xs); }
   .nav__links { order: 3; width: 100%; margin: 0; flex-wrap: wrap; column-gap: var(--space-lg); row-gap: 0; }
   .hero { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-xl); padding-top: var(--space-lg); }
+  /* на узком экране порядок как в чтении: имя → портрет → лид и кнопка → факты */
+  .hero__text { display: contents; }
   h1, .hero .portrait, .intro, .spec { grid-column: 1; grid-row: auto; }
+  h1 { order: 1; } .hero .portrait { order: 2; } .intro { order: 3; margin-top: 0; } .spec { order: 4; }
   .hero .portrait { width: min(100%, 20rem); }
   .conditions, .book, .help { grid-template-columns: minmax(0, 1fr); }
   .book__text, .book__call, .groups { grid-column: 1; }
