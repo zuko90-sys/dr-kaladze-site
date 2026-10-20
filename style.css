@@ -275,6 +275,7 @@ body.marks [data-approve]::before {
 .cond { padding: var(--space-lg); border-radius: var(--radius-panel); background: var(--color-paper-2); }
 .cond h3 { margin-bottom: var(--space-sm); }
 .cond p { margin: 0; max-width: var(--measure); }
+.cond p + p { margin-top: var(--space-sm); }
 .cond:target h3 { color: var(--color-accent-text); }
 .tests > div { grid-template-columns: minmax(0, 17rem) minmax(0, 1fr); }
 .tests dt { font-size: var(--text-sm); text-transform: none; letter-spacing: 0; color: var(--color-ink); font-weight: 600; }
