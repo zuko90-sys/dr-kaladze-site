@@ -1,3 +1,4 @@
-# Черновик: сайт закрыт от поисковиков до чистовой сборки (build.py --final)
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://drkaladze.com/sitemap.xml
